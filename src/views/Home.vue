@@ -44,12 +44,10 @@ export default {
     get() {
       this.$http(`file`).then((resp) => {
         this.arquivos = resp.data;
-        console.log(resp.data);
       });
     },
     drop(event) {
       let lista = event.dataTransfer.files;
-      console.log(lista);
       if (lista.length) {
         lista.forEach((element) => {
           this.send(element);
@@ -84,17 +82,12 @@ export default {
         .then(() => {
           this.get();
         })
-        .catch(function (error) {
-          console.log(error);
-        });
     },
     rename(event) {
-      console.log(event);
       this.renameD = true;
       this.renameFileName = event;
     },
     edit(event) {
-      console.log(event);
       this.renameD = false;
       var data = new FormData();
       data.append("fileName", event.fileName);
@@ -114,16 +107,6 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
-    },
-    editar(event) {
-      console.log(event);
-      let obj = this.usuarios.filter((ele) => ele.id == event.id);
-      this.usuario = { ...obj[0] };
-      this.edicao = true;
-      this.$router.push({
-        name: "changePass",
-        params: { editar: { ...this.usuario } },
-      });
     },
     delet(id) {
       this.$http.delete(`/usuario/${id.id}`).then(() => {
