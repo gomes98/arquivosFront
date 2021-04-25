@@ -1,7 +1,12 @@
 <template>
-  <v-card class="ma-2" :id="file.fileName" @contextmenu="menu($event)">
+  <v-card
+    class="ma-2"
+    :id="file.fileName"
+    @contextmenu="menu($event)"
+    @dblclick="dblclick(file.fileName)"
+  >
     <v-card-text class="d-flex justify-center align-center">
-      <v-icon x-large>mdi-file</v-icon>
+      <v-icon x-large>{{ icon() }}</v-icon>
     </v-card-text>
     <v-card-actions>
       {{ file.fileName }}
@@ -14,13 +19,17 @@
       offset-y
     >
       <v-list>
-        <v-list-item v-for="(item, index) in items" :key="index" @click="$emit(item.event, file.fileName)">
+        <v-list-item
+          v-for="(item, index) in items"
+          :key="index"
+          @click="$emit(item.event, file.fileName)"
+        >
           <v-list-item-title>
-              <v-icon>
-                  {{item.icon}}
-              </v-icon>
-              {{ item.title }}
-              </v-list-item-title>
+            <v-icon>
+              {{ item.icon }}
+            </v-icon>
+            {{ item.title }}
+          </v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -32,13 +41,20 @@ export default {
   name: "File",
   props: ["file"],
   data: () => ({
+    showProps: false,
     showMenu: false,
     x: 0,
     y: 0,
     items: [
-      { title: "Excluir", icon: 'mdi-delete' ,event: "del" },
-      { title: "Renomear", icon: 'mdi-rename-box', event: 'rename' },
-      { title: "Propriedades", icon: 'mdi-format-list-bulleted' , event: 'props' },
+      { title: "Download", icon: "mdi-cloud-download", event: "down" },
+      { title: "Excluir", icon: "mdi-delete", event: "del" },
+      // { title: "Editar", icon: 'mdi-lead-pencil' ,event: "edit" },
+      { title: "Renomear", icon: "mdi-rename-box", event: "rename" },
+      {
+        title: "Propriedades",
+        icon: "mdi-format-list-bulleted",
+        event: "props",
+      },
     ],
   }),
   methods: {
@@ -51,15 +67,37 @@ export default {
         this.showMenu = true;
       });
     },
+    dblclick(event) {
+      console.log(event);
+      window.location.href = "http://localhost:8000/download/" + event;
+    },
+    icon() {
+      let arq = this.file.fileName;
+      let ext = arq.substring(arq.lastIndexOf(".") + 1).toLowerCase();
+      switch (ext) {
+        case "pdf":
+          return "mdi-file-pdf";
+        case "docx":
+        case "doc":
+          return "mdi-file-word";
+        case "xlsx":
+        case "xls":
+          return "mdi-file-excel";
+        case "pptx":
+        case "ppt":
+          return "mdi-file-powerpoint";
+        case "jpg":
+        case "jpeg":
+          return "mdi-file-image";
+        case "txt":
+          return "mdi-file-document";
+        default:
+          return "mdi-file"
+      }
+    },
   },
 };
 </script>
 
 <style>
-.file {
-  margin: 20px;
-  width: 100px;
-  height: 100px;
-  background-color: greenyellow;
-}
 </style>

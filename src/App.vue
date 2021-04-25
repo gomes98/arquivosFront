@@ -3,19 +3,23 @@
 
   <v-app>
     <!-- <v-navigation-drawer app> -->
-      <!-- -->
+    <!-- -->
     <!-- </v-navigation-drawer> -->
 
-    <v-app-bar app>
+    <!-- <v-app-bar app>
       Gerenciador de Arquivos PNM
-    </v-app-bar>
+    </v-app-bar> -->
 
+    <AppBar />
     <!-- Sizes your content based upon application components -->
     <v-main>
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
         <!-- If using vue-router -->
         <router-view></router-view>
+        <v-snackbar v-model="snackbar" :color="color" :timeout="timeout">
+          {{ text }}
+        </v-snackbar>
       </v-container>
     </v-main>
 
@@ -26,13 +30,42 @@
 </template>
 
 <script>
-
-
+import AppBar from "./components/AppBar/AppBar";
+import { io } from "socket.io-client";
 export default {
   name: "App",
-
+  components: {
+    AppBar,
+  },
   data: () => ({
-    //
+    snackbar: false,
+    timeout: 2000,
+    text: "",
+    color: "",
   }),
+  created() {
+      const socket = io();
+      // const socket = io("http://localhost:8000");
+        socket.on('fileChange', (message) => {
+            this.snackbar = false;
+            switch(message.op){
+                case 'add':
+                    this.color = 'green'
+                    this.text = `Arquivo ${message.file} adicionado`
+                    this.snackbar = true
+                    break
+                case 'delete':
+                    this.color = 'red'
+                    this.text = `Arquivo ${message.file} Removido`
+                    this.snackbar = true
+                    break
+                case 'rename':
+                    this.color = 'orange'
+                    this.text = `Arquivo ${message.fileName} Renomeado para ${message.newFileName}`
+                    this.snackbar = true
+                    break
+            }
+        })
+  },
 };
 </script>

@@ -11,6 +11,9 @@
               :file="arq"
               @del="del"
               @rename="rename"
+              @down="download"
+              @edit="openEditor"
+              @props="propri"
             />
           </v-container>
         </v-card-text>
@@ -21,20 +24,31 @@
       :fileName="renameFileName"
       @RENAME="edit($event)"
     />
+    <Editor v-model="editor" :file="editorFileName" />
+    <Propriedades v-model="propriedades" :file="selectedFile" />
   </v-container>
 </template>
 
 <script>
 import File from "../components/File/File";
 import Rename from "../components/File/DialogRename";
+import Propriedades from "../components/File/DialogProps";
+import Editor from "../components/Editor/EditorDialog";
+
 export default {
   name: "Home",
   components: {
     File,
     Rename,
+    Editor,
+    Propriedades
   },
   data: () => {
     return {
+      propriedades: false,
+      selectedFile:{},
+      editor: false,
+      editorFileName: '',
       arquivos: [],
       renameD: false,
       renameFileName: "",
@@ -53,6 +67,9 @@ export default {
           this.send(element);
         });
       }
+    },
+    download(event){
+      window.location.href = 'http://localhost:8000/download/'+event
     },
     send(file) {
       let formData = new FormData();
@@ -108,17 +125,17 @@ export default {
           console.log(error);
         });
     },
-    delet(id) {
-      this.$http.delete(`/usuario/${id.id}`).then(() => {
-        this.get();
-        this.$store.dispatch("resetSnack");
-        this.$store.dispatch(
-          "showSuccessSnack",
-          "Usuário deletado com Sucesso!"
-        );
-        this.get();
-      });
+    openEditor(event){
+      console.log('chamou editor');
+      this.editor = true
+      this.editorFileName= event
     },
+    propri(event){
+      this.propriedades = true
+      this.selectedFile= this.arquivos.find(ele =>{
+        return ele.fileName == event
+      })
+    }
   },
   created() {
     this.get();
