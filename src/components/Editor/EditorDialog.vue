@@ -7,31 +7,18 @@
       transition="dialog-bottom-transition"
     >
       <v-card>
-        <v-toolbar
-          dark
-          color="primary"
-        >
-          <v-btn
-            icon
-            dark
-            @click="close"
-          >
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>Editor "{{ file }}"</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn
-              dark
-              text
-              @click="dialog = false"
-            >
-              Salvar
-            </v-btn>
+            <v-btn dark text @click="sendData"> Salvar </v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <v-card-text >
-            <VueEditor class="editor" v-model="data"/>
+        <v-card-text>
+          <VueEditor class="editor" v-model="data" />
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -40,28 +27,70 @@
 
 <script>
 import { VueEditor } from "vue2-editor";
-  export default {
-    props: ['value', 'file'],  
-    components:{VueEditor},
-    data () {
-      return {
-        dialog: false,
-        data:'',
-      }
+import axios from "axios";
+export default {
+  props: ["value", "file"],
+  components: { VueEditor },
+  data() {
+    return {
+      dialog: false,
+      data: "",
+    };
+  },
+  methods: {
+    close() {
+      this.$emit("input", false);
     },
-    methods:{
-        close(){
-            this.$emit('input', false)
+    getFile() {
+      // this.$http("");
+    },
+    getData() {
+      axios
+        .get(`http://localhost:8000/download/${this.file}`)
+        // .get(`${window.location.href}download/${this.file}`)
+        .then((resp) => {
+          this.data = resp.data;
+        });
+    },
+    sendData(){
+      var data = new FormData();
+      data.append("fileName", this.file);
+      data.append("data", this.data);
+      var config = {
+        method: "put",
+        url: "editor",
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-        getFile(){
-            this.$http('')
-        }
+        data: data,
+      };
+      this.$http(config)
+        .then(() => {
+          this.getData();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
-  }
+  },
+  watch: {
+    file() {
+      this.getData();
+    },
+  },
+  // created() {
+  //   console.log(window.location.href);
+  // },
+  mounted() {
+    if (this.file) {
+      this.getData();
+    }
+  },
+};
 </script>
 
 <style>
-.editor{
-    height: 80vh;
+.editor {
+  height: 80vh;
 }
 </style>

@@ -46,7 +46,13 @@ export default {
   data: () => {
     return {
       propriedades: false,
-      selectedFile:{},
+      selectedFile:{
+        fileName: '',
+        info:{
+          size: 0,
+          mtime: ''
+        }
+      },
       editor: false,
       editorFileName: '',
       arquivos: [],
@@ -139,6 +145,9 @@ export default {
   },
   created() {
     this.get();
+     this.$socket.on('fileChange', () => {
+       this.get();
+     })
   },
 };
 </script>

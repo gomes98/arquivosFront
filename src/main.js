@@ -4,14 +4,14 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import './plugins/axios/index'
+import './plugins/socketio/index'
 import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false
 
 new Vue({
-  
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
+    router,
+    store,
+    vuetify,
+    render: h => h(App)
 }).$mount('#app')

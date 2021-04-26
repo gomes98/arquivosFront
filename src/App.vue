@@ -31,7 +31,6 @@
 
 <script>
 import AppBar from "./components/AppBar/AppBar";
-import { io } from "socket.io-client";
 export default {
   name: "App",
   components: {
@@ -44,9 +43,8 @@ export default {
     color: "",
   }),
   created() {
-      const socket = io();
-      // const socket = io("http://localhost:8000");
-        socket.on('fileChange', (message) => {
+
+        this.$socket.on('fileChange', (message) => {
             this.snackbar = false;
             switch(message.op){
                 case 'add':

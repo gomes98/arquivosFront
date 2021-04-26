@@ -48,7 +48,7 @@ export default {
     items: [
       { title: "Download", icon: "mdi-cloud-download", event: "down" },
       { title: "Excluir", icon: "mdi-delete", event: "del" },
-      // { title: "Editar", icon: 'mdi-lead-pencil' ,event: "edit" },
+      { title: "Editar", icon: 'mdi-lead-pencil' ,event: "edit" },
       { title: "Renomear", icon: "mdi-rename-box", event: "rename" },
       {
         title: "Propriedades",
