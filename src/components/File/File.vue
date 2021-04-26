@@ -4,6 +4,7 @@
     :id="file.fileName"
     @contextmenu="menu($event)"
     @dblclick="dblclick(file.fileName)"
+    @click="$emit('selected', file)"
   >
     <v-card-text class="d-flex justify-center align-center">
       <v-icon x-large>{{ icon() }}</v-icon>

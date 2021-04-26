@@ -51,9 +51,11 @@ export default {
       let mb = bytes / (1024 * 1024)
       let kb = bytes / 1024
       if(mb > 1){
-        return `${mb.toFixed(2)} Mb`
+        return `${mb.toFixed(2)} MB`
+      }else if(kb > 1){
+        return `${kb.toFixed(2)} KB`
       }else{
-        return `${kb.toFixed(2)} Kb`
+        return `${bytes} B`
       }
     },
     dataFormatada(data){
