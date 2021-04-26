@@ -62,6 +62,11 @@ export default {
                     this.text = `Arquivo ${message.fileName} Renomeado para ${message.newFileName}`
                     this.snackbar = true
                     break
+                case 'edt':
+                    this.color = 'yellow'
+                    this.text = `Arquivo ${message.file} Editado`
+                    this.snackbar = true
+                    break
             }
         })
   },

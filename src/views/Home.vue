@@ -75,7 +75,7 @@ export default {
       }
     },
     download(event){
-      window.location.href = 'http://localhost:8000/download/'+event
+      window.location.href = encodeURI(`${this.$http.defaults.baseURL}download/${event}`)
     },
     send(file) {
       let formData = new FormData();
@@ -132,7 +132,6 @@ export default {
         });
     },
     openEditor(event){
-      console.log('chamou editor');
       this.editor = true
       this.editorFileName= event
     },

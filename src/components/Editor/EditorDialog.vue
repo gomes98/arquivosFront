@@ -11,14 +11,16 @@
           <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Editor "{{ file }}"</v-toolbar-title>
+          <v-toolbar-title>Editor "{{ file }}"
+            <small>Ctrl+S para salvar</small>
+          </v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn dark text @click="sendData"> Salvar </v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-card-text>
-          <VueEditor class="editor" v-model="data" />
+          <v-textarea v-model="data" rows="1" auto-grow @keydown.ctrl.83.prevent="sendData"></v-textarea>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -26,11 +28,8 @@
 </template>
 
 <script>
-import { VueEditor } from "vue2-editor";
-import axios from "axios";
 export default {
   props: ["value", "file"],
-  components: { VueEditor },
   data() {
     return {
       dialog: false,
@@ -41,18 +40,12 @@ export default {
     close() {
       this.$emit("input", false);
     },
-    getFile() {
-      // this.$http("");
-    },
     getData() {
-      axios
-        .get(`http://localhost:8000/download/${this.file}`)
-        // .get(`${window.location.href}download/${this.file}`)
-        .then((resp) => {
-          this.data = resp.data;
-        });
+      this.$http.get(`editor/?fileName=${this.file}`).then((resp) => {
+        this.data = resp.data;
+      });
     },
-    sendData(){
+    sendData() {
       var data = new FormData();
       data.append("fileName", this.file);
       data.append("data", this.data);
@@ -71,16 +64,13 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
-    }
+    },
   },
   watch: {
     file() {
       this.getData();
     },
   },
-  // created() {
-  //   console.log(window.location.href);
-  // },
   mounted() {
     if (this.file) {
       this.getData();

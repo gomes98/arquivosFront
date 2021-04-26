@@ -68,8 +68,7 @@ export default {
       });
     },
     dblclick(event) {
-      console.log(event);
-      window.location.href = "http://localhost:8000/download/" + event;
+      window.location.href = encodeURI(`${this.$http.defaults.baseURL}download/${event}`)
     },
     icon() {
       let arq = this.file.fileName;
