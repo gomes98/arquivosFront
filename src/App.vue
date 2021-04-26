@@ -43,32 +43,31 @@ export default {
     color: "",
   }),
   created() {
-
-        this.$socket.on('fileChange', (message) => {
-            this.snackbar = false;
-            switch(message.op){
-                case 'add':
-                    this.color = 'green'
-                    this.text = `Arquivo ${message.file} adicionado`
-                    this.snackbar = true
-                    break
-                case 'delete':
-                    this.color = 'red'
-                    this.text = `Arquivo ${message.file} Removido`
-                    this.snackbar = true
-                    break
-                case 'rename':
-                    this.color = 'orange'
-                    this.text = `Arquivo ${message.fileName} Renomeado para ${message.newFileName}`
-                    this.snackbar = true
-                    break
-                case 'edt':
-                    this.color = 'yellow'
-                    this.text = `Arquivo ${message.file} Editado`
-                    this.snackbar = true
-                    break
-            }
-        })
+    this.$socket.on("fileChange", (message) => {
+      this.snackbar = false;
+      switch (message.op) {
+        case "add":
+          this.color = "green";
+          this.text = `Arquivo ${message.file} adicionado`;
+          this.snackbar = true;
+          break;
+        case "delete":
+          this.color = "red";
+          this.text = `Arquivo ${message.file} Removido`;
+          this.snackbar = true;
+          break;
+        case "rename":
+          this.color = "orange";
+          this.text = `Arquivo ${message.fileName} Renomeado para ${message.newFileName}`;
+          this.snackbar = true;
+          break;
+        case "edt":
+          this.color = "yellow";
+          this.text = `Arquivo ${message.file} Editado`;
+          this.snackbar = true;
+          break;
+      }
+    });
   },
 };
 </script>

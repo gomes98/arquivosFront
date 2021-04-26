@@ -48,7 +48,7 @@ export default {
     items: [
       { title: "Download", icon: "mdi-cloud-download", event: "down" },
       { title: "Excluir", icon: "mdi-delete", event: "del" },
-      { title: "Editar", icon: 'mdi-lead-pencil' ,event: "edit" },
+      { title: "Editar", icon: "mdi-lead-pencil", event: "edit" },
       { title: "Renomear", icon: "mdi-rename-box", event: "rename" },
       {
         title: "Propriedades",
@@ -68,7 +68,9 @@ export default {
       });
     },
     dblclick(event) {
-      window.location.href = encodeURI(`${this.$http.defaults.baseURL}download/${event}`)
+      window.location.href = encodeURI(
+        `${this.$http.defaults.baseURL}download/${event}`
+      );
     },
     icon() {
       let arq = this.file.fileName;
@@ -87,11 +89,12 @@ export default {
           return "mdi-file-powerpoint";
         case "jpg":
         case "jpeg":
+        case "png":
           return "mdi-file-image";
         case "txt":
           return "mdi-file-document";
         default:
-          return "mdi-file"
+          return "mdi-file";
       }
     },
   },
