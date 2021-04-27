@@ -47,6 +47,7 @@ export default {
       this.snackbar = false;
       switch (message.op) {
         case "add":
+        case "created":
           this.color = "green";
           this.text = `Arquivo ${message.file} adicionado`;
           this.snackbar = true;

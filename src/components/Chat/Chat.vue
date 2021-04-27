@@ -32,7 +32,9 @@
             hint="Tecle enter para enviar"
             @keydown.enter="send"
           ></v-text-field>
-          <v-btn elevation="2" color="success" fab @click="send"> <v-icon>mdi-send</v-icon> </v-btn>
+          <v-btn elevation="2" color="success" fab @click="send">
+            <v-icon>mdi-send</v-icon>
+          </v-btn>
         </v-row>
       </v-card-text>
     </v-card>
@@ -49,9 +51,7 @@ export default {
   }),
   watch: {
     menu() {
-      if (this.menu) {
-        this.color = "primary";
-      }
+      this.color = "primary";
     },
   },
   methods: {

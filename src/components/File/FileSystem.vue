@@ -2,14 +2,20 @@
   <v-container fluid @dragover.prevent @drop.prevent="drop">
     <v-col cols="12">
       <v-card>
-        <v-card-title> Arquivos no Sistema </v-card-title>
-        <v-card-text v-show="arquivos.length > 0">
-          <v-container id="fileSystem" class="d-flex flex-wrap">
+        <v-card-title> Arquivos no Sistema 
+        </v-card-title>
+        <v-card-text>
+          <v-container
+            id="fileSystem"
+            class="d-flex flex-wrap"
+            v-show="arquivos.length > 0"
+          >
             <File
               v-for="(arq, index) in arquivos"
               :key="index"
               :file="arq"
               @del="del"
+              @delDir="$store.dispatch('deleteDir', $event)"
               @rename="rename"
               @down="download"
               @edit="openEditor"
@@ -63,10 +69,21 @@ export default {
       },
       editor: false,
       editorFileName: "",
-      arquivos: [],
       renameD: false,
       renameFileName: "",
+      newFile: false,
+      newDir: false,
     };
+  },
+  computed: {
+    arquivos: {
+      get() {
+        return this.$store.getters.getFiles;
+      },
+      set(value) {
+        this.$store.dispatch("setFiles", value);
+      },
+    },
   },
   methods: {
     tamanho(bytes) {
@@ -81,9 +98,7 @@ export default {
       }
     },
     get() {
-      this.$http(`file`).then((resp) => {
-        this.arquivos = resp.data;
-      });
+      this.$store.dispatch("getFiles");
     },
     drop(event) {
       let lista = event.dataTransfer.files;
@@ -94,37 +109,13 @@ export default {
       }
     },
     download(event) {
-      window.location.href = encodeURI(
-        `${this.$http.defaults.baseURL}download/${event}`
-      );
+      this.$store.dispatch("downloadFile", event);
     },
     send(file) {
-      let formData = new FormData();
-      formData.append("file", file);
-      this.$http
-        .post("file", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then(() => {
-          this.get();
-        });
+      this.$store.dispatch("sendFile", file);
     },
     del(event) {
-      var data = new FormData();
-      data.append("fileName", event);
-      var config = {
-        method: "delete",
-        url: "file",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        data: data,
-      };
-      this.$http(config).then(() => {
-        this.get();
-      });
+      this.$store.dispatch("deleteFile", event);
     },
     rename(event) {
       this.renameD = true;
@@ -132,24 +123,7 @@ export default {
     },
     edit(event) {
       this.renameD = false;
-      var data = new FormData();
-      data.append("fileName", event.fileName);
-      data.append("newFileName", event.newFileName);
-      var config = {
-        method: "put",
-        url: "file",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        data: data,
-      };
-      this.$http(config)
-        .then(() => {
-          this.get();
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      this.$store.dispatch("renameFile", event);
     },
     openEditor(event) {
       this.editor = true;
