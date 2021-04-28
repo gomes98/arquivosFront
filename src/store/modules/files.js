@@ -3,18 +3,29 @@ export default {
     state: {
         files: [],
         downloads: 0,
+        actDir: null,
+        history: [],
+        historyCur: 0
     },
     mutations: {
         setFiles(state, payload) {
             state.files = payload
+        },
+        setActDir(state, payload) {
+            state.actDir = payload
+        },
+        setHistoryPos(state, payload) {
+            state.historyCur = payload
         },
         addDownload(state) {
             state.downloads++
         },
     },
     actions: {
-        getFiles(context) {
-            axios(`file`).then((resp) => {
+        getFiles(context, payload) {
+            let dir = payload ? `?directory=${payload}` : ''
+            context.commit('setActDir', dir)
+            axios(`file${context.getters.getActDir}`).then((resp) => {
                 context.commit('setFiles', resp.data)
             });
         },
@@ -119,5 +130,8 @@ export default {
         getFiles(state) {
             return state.files
         },
+        getActDir(state) {
+            return state.actDir
+        }
     },
 }

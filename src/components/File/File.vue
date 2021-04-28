@@ -57,16 +57,14 @@ export default {
         event: "props",
       },
     ],
-    itemsDir: [
-      { title: "Excluir", icon: "mdi-delete", event: "delDir" },
-    ],
+    itemsDir: [{ title: "Excluir", icon: "mdi-delete", event: "delDir" }],
   }),
   methods: {
-    items(){
-      if(this.file.dir){
-        return this.itemsDir
-      }else{
-        return this.itemsFile
+    items() {
+      if (this.file.dir) {
+        return this.itemsDir;
+      } else {
+        return this.itemsFile;
       }
     },
     menu(e) {
@@ -78,10 +76,15 @@ export default {
         this.showMenu = true;
       });
     },
-    dblclick(event) {
-      window.location.href = encodeURI(
-        `${this.$http.defaults.baseURL}download/${event}`
-      );
+    dblclick() {
+      let dir = this.file.fileName.substring(this.file.fileName.indexOf("/", 2))
+      if (this.file.dir) {
+        this.$store.dispatch('getFiles', dir)
+      } else {
+        window.location.href = encodeURI(
+          `${this.$http.defaults.baseURL}download/${dir}`
+        );
+      }
     },
     icon() {
       let arq = this.file.fileName;

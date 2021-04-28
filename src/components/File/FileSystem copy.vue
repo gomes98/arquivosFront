@@ -2,28 +2,33 @@
   <v-container fluid @dragover.prevent @drop.prevent="drop">
     <v-col cols="12">
       <v-card>
-        <v-card-title> 
-          <v-btn icon @click="$store.dispatch('getFiles')"><v-icon>mdi-home</v-icon></v-btn>
-           Arquivos no Sistema </v-card-title>
+        <v-card-title> Arquivos no Sistema </v-card-title>
         <v-card-text>
-          <v-container
-            id="fileSystem"
-            class="d-flex flex-wrap"
-            v-show="arquivos.length > 0"
-          >
-            <File
-              v-for="(arq, index) in arquivos"
-              :key="index"
-              :file="arq"
-              @del="del"
-              @delDir="$store.dispatch('deleteDir', $event)"
-              @rename="rename"
-              @down="download"
-              @edit="openEditor"
-              @props="propri"
-              @selected="selectedFile = $event"
-            />
-          </v-container>
+          <v-row>
+            <v-col cols="3">
+              <Tree />
+            </v-col>
+            <v-col cols="9">
+              <v-container
+                id="fileSystem"
+                class="d-flex flex-wrap"
+                v-show="arquivos.length > 0"
+              >
+                <File
+                  v-for="(arq, index) in arquivos"
+                  :key="index"
+                  :file="arq"
+                  @del="del"
+                  @delDir="$store.dispatch('deleteDir', $event)"
+                  @rename="rename"
+                  @down="download"
+                  @edit="openEditor"
+                  @props="propri"
+                  @selected="selectedFile = $event"
+                />
+              </v-container>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions v-show="selectedFile">
           <strong v-show="selectedFile.fileName">Nome: </strong
@@ -50,6 +55,7 @@ import File from "@/components/File/File";
 import Rename from "@/components/File/DialogRename";
 import Propriedades from "@/components/File/DialogProps";
 import Editor from "@/components/Editor/EditorDialog";
+import Tree from "./TreeView";
 export default {
   name: "FileSystem",
   components: {
@@ -57,6 +63,7 @@ export default {
     Rename,
     Editor,
     Propriedades,
+    Tree,
   },
   data: () => {
     return {
