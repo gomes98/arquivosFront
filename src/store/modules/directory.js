@@ -30,7 +30,30 @@ export default {
             return state.tree
         },
         getWorkDir(state) {
-            return state.workDir
+            if(!state.workDir){
+                return ''
+            }
+            let dirs = state.workDir.split('/')
+            return dirs
         },
+        getWorkDirSTR:  (state)=> (indexDir) => {
+            if(!state.workDir){
+                return ''
+            }
+            let dirs = state.workDir.split('/')
+            let dirSTR =''
+            for (let index = 1; index < indexDir+1; index++) {
+                dirSTR += `/${dirs[index]}`
+            }
+            return dirSTR
+        },
+        getDirsPath(state){
+            let rnt = [] 
+            state.tree.forEach(element => {
+                console.log(element);
+            });
+            return rnt
+
+        }
     },
 }

@@ -2,9 +2,20 @@
   <v-container fluid @dragover.prevent @drop.prevent="drop">
     <v-col cols="12">
       <v-card>
-        <v-card-title> 
-          <v-btn icon @click="$store.dispatch('getFiles')"><v-icon>mdi-home</v-icon></v-btn>
-           Arquivos no Sistema </v-card-title>
+        <v-card-title> Arquivos no Sistema </v-card-title>
+        <v-card-subtitle>
+          <a @click="$store.dispatch('getFiles', '')"><v-icon>mdi-home</v-icon></a>
+          <a
+            v-for="(dir, index) in $store.getters.getWorkDir"
+            :key="index"
+            @click="
+              $store.dispatch('getFiles', $store.getters.getWorkDirSTR(index))
+            "
+            v-show="index"
+          >
+            >{{ ` ${dir}` }}
+          </a>
+        </v-card-subtitle>
         <v-card-text>
           <v-container
             id="fileSystem"
@@ -27,7 +38,7 @@
         </v-card-text>
         <v-card-actions v-show="selectedFile">
           <strong v-show="selectedFile.fileName">Nome: </strong
-          >{{ selectedFile.fileName }}
+          >{{ fileName(selectedFile.fileName) }}
           <v-spacer></v-spacer>
           <span v-show="selectedFile.info.size">
             <strong> Tamanho: </strong>{{ tamanho(selectedFile.info.size) }}
@@ -135,6 +146,9 @@ export default {
       this.selectedFile = this.arquivos.find((ele) => {
         return ele.fileName == event;
       });
+    },
+    fileName(file) {
+      return file.substring(file.lastIndexOf("/") + 1);
     },
   },
   created() {

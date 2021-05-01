@@ -20,9 +20,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="close">
-            Cancelar
-          </v-btn>
+          <v-btn color="blue darken-1" text @click="close"> Cancelar </v-btn>
           <v-btn color="blue darken-1" text @click="newFile"> Criar </v-btn>
         </v-card-actions>
       </v-card>
@@ -32,7 +30,7 @@
 <script>
 export default {
   props: ["value"],
-    data: () => ({
+  data: () => ({
     dialog: false,
     dirName: "",
   }),
@@ -41,8 +39,8 @@ export default {
       this.$emit("input", false);
     },
     newFile() {
-        this.$store.dispatch('createDir', this.dirName)
-      this.dirName = ''
+      this.$store.dispatch("createDir", this.dirName);
+      this.dirName = "";
       this.close();
     },
   },

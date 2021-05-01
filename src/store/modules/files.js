@@ -3,7 +3,7 @@ export default {
     state: {
         files: [],
         downloads: 0,
-        actDir: null,
+        actDir: '',
         history: [],
         historyCur: 0
     },
@@ -24,7 +24,11 @@ export default {
     actions: {
         getFiles(context, payload) {
             let dir = payload ? `?directory=${payload}` : ''
-            context.commit('setActDir', dir)
+            if(payload != null){
+                context.dispatch('setWorkdir', payload)
+                context.commit('setActDir', dir)
+            }
+            
             axios(`file${context.getters.getActDir}`).then((resp) => {
                 context.commit('setFiles', resp.data)
             });
@@ -35,37 +39,39 @@ export default {
         sendFile(context, file) {
             let formData = new FormData();
             formData.append("file", file);
-            axios.post("file", formData, {
+            axios.post(`file${context.getters.getActDir}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             })
-                .then(() => {
-                    context.dispatch('getFiles')
+            .then(() => {
+                context.dispatch('getFiles')
                 });
-        },
+            },
         createFile(context, file) {
             let formData = new FormData();
             formData.append("fileName", file.fileName);
             formData.append("fileContent", file.fileContent);
-            axios.post("file/create", formData, {
+            axios.post(`file/create${context.getters.getActDir}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             })
-                .then(() => {
-                    context.dispatch('getFiles')
-                });
+            .then(() => {
+                context.dispatch('getFiles')
+            });
         },
         createDir(context, payload) {
             let formData = new FormData();
             formData.append("dirName", payload);
-            axios.post("directory", formData, {
+            
+            axios.post(`directory${context.getters.getActDir}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             })
-                .then(() => {
+                .then((resp) => {
+                    console.log(resp);
                     context.dispatch('getFiles')
                 });
         },
@@ -74,7 +80,7 @@ export default {
             data.append("fileName", payload);
             var config = {
                 method: "delete",
-                url: "file",
+                url: `file${context.getters.getActDir}`,
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -105,7 +111,7 @@ export default {
             data.append("newFileName", payload.newFileName);
             var config = {
                 method: "put",
-                url: "file",
+                url: `file${context.getters.getActDir}`,
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -121,7 +127,7 @@ export default {
         },
         downloadFile(context, payload) {
             window.location.href = encodeURI(
-                `${axios.defaults.baseURL}download/${payload}`
+                `${axios.defaults.baseURL}download/${context.getters.getActDir}${payload}`
             );
             context.dispatch('addDownload')
         }
@@ -132,6 +138,21 @@ export default {
         },
         getActDir(state) {
             return state.actDir
+        },
+        getDirs(state){
+            let dirs = []
+            state.files.forEach(ele =>{
+                if(ele.dir){
+                    dirs.push(ele.fileName)
+                }
+            })
+            return dirs
+        },
+        getFileName: () => (fileName) =>{
+            if(!fileName){
+                return ''
+            }
+            return fileName.substring(fileName.lastIndexOf("/") + 1);
         }
     },
 }

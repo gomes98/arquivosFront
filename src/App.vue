@@ -69,6 +69,7 @@ export default {
           break;
       }
     });
+    this.$store.dispatch('getDirTree')
   },
 };
 </script>

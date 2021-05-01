@@ -9,7 +9,7 @@
     <v-card-text class="d-flex justify-center align-center">
       <v-icon x-large>{{ icon() }}</v-icon>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions class="d-flex justify-center align-center">
       {{ fileName(file.fileName) }}
     </v-card-actions>
     <v-menu
@@ -48,16 +48,18 @@ export default {
     y: 0,
     itemsFile: [
       { title: "Download", icon: "mdi-cloud-download", event: "down" },
-      { title: "Excluir", icon: "mdi-delete", event: "del" },
       { title: "Editar", icon: "mdi-lead-pencil", event: "edit" },
-      { title: "Renomear", icon: "mdi-rename-box", event: "rename" },
+      { title: "Excluir", icon: "mdi-delete", event: "del" },
       {
         title: "Propriedades",
         icon: "mdi-format-list-bulleted",
         event: "props",
       },
     ],
-    itemsDir: [{ title: "Excluir", icon: "mdi-delete", event: "delDir" }],
+    itemsDir: [
+      { title: "Renomear", icon: "mdi-rename-box", event: "rename" },
+      { title: "Excluir", icon: "mdi-delete", event: "delDir" },
+    ],
   }),
   methods: {
     items() {
@@ -77,9 +79,12 @@ export default {
       });
     },
     dblclick() {
-      let dir = this.file.fileName.substring(this.file.fileName.indexOf("/", 2))
+      let dir = this.file.fileName.substring(
+        this.file.fileName.indexOf("/", 2)
+      );
       if (this.file.dir) {
-        this.$store.dispatch('getFiles', dir)
+        this.$store.dispatch("setWorkdir", dir);
+        this.$store.dispatch("getFiles", dir);
       } else {
         window.location.href = encodeURI(
           `${this.$http.defaults.baseURL}download/${dir}`
